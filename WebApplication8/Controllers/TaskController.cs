@@ -126,38 +126,46 @@ namespace WebApplication8.Controllers
             return NoContent();
         }
 
-        [HttpGet("Tamamlanan Siparisler")]
-        public ActionResult<IEnumerable<object>> GetComplatedGarsons()
-        {
-            var garsonlar = _garsonRepository.GetComplatedGarsons();
+        //[HttpGet("Tamamlanan Siparisler")]
+        //public ActionResult<IEnumerable<object>> GetComplatedGarsons()
+        //{
+        //    var garsonlar = _garsonRepository.GetComplatedGarsons();
+        //    if (garsonlar == null || !garsonlar.Any())
+        //    {
+        //        return NotFound("Hiç tamamlanan sipariş bulunamadı.");
+        //    }
 
-            var siparisler = garsonlar.Select(g => new
-            {
-                MusteriNumarasi = g.Id,
-                YemekAdi = g.YemekAdi,
-                IcecekAdi = g.IcecekAdi,
-                Aciklama = g.Aciklama,
-                SiparisTamamlandi = g.siparisTamamlandi ? "Evet" : "Hayır"
-            }).ToList();
+        //    var siparisler = garsonlar.Select(g => new
+        //    {
+        //        MusteriNumarasi = g.Id,
+        //        YemekAdi = g.YemekAdi,
+        //        IcecekAdi = g.IcecekAdi,
+        //        Aciklama = g.Aciklama,
+        //        SiparisTamamlandi = g.siparisTamamlandi ? "Evet" : "Hayır"
+        //    }).ToList();
 
-            return Ok(siparisler);
-        }
+        //    return Ok(siparisler);
+        //}
 
-        [HttpGet("Tamamlanmayan Siparisler")]
-        public ActionResult<IEnumerable<object>> GetUnfinishedGarsons()
-        {
-            var garsonlar = _garsonRepository.GetUnfinishedGarsons();
+        //[HttpGet("Tamamlanmayan Siparisler")]
+        //public ActionResult<IEnumerable<object>> GetUnfinishedGarsons()
+        //{
+        //    var garsonlar = _garsonRepository.GetUnfinishedGarsons();
+        //    if (garsonlar == null || !garsonlar.Any())
+        //    {
+        //        return NotFound("Hiç tamamlanmayan sipariş bulunamadı.");
+        //    }
 
-            var siparisler = garsonlar.Select(g => new
-            {
-                MusteriNumarasi = g.Id,
-                YemekAdi = g.YemekAdi,
-                IcecekAdi = g.IcecekAdi,
-                Aciklama = g.Aciklama,
-                SiparisTamamlandi = g.siparisTamamlandi ? "Evet" : "Hayır"
-            }).ToList();
+        //    var siparisler = garsonlar.Select(g => new
+        //    {
+        //        MusteriNumarasi = g.Id,
+        //        YemekAdi = g.YemekAdi,
+        //        IcecekAdi = g.IcecekAdi,
+        //        Aciklama = g.Aciklama,
+        //        SiparisTamamlandi = g.siparisTamamlandi ? "Evet" : "Hayır"
+        //    }).ToList();
 
-            return Ok(siparisler);
-        }
+        //    return Ok(siparisler);
+        //}
     }
 }

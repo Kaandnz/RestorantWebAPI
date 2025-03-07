@@ -1,27 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
-
+﻿using MongoDB.Driver;
 using WebApplication8.Models;
+using WebApplication8.Settings;
 
 namespace WebApplication8.Repository
 {
-    public class GarsonRepository : GenericRepository<Garson> , IGarsonRepository
+    public class GarsonRepository : GenericRepository<Garson>, IGarsonRepository
     {
-        private readonly DbContext _taskDbContext;
+        private readonly IMongoCollection<Garson> _garsonCollection;
 
-        public GarsonRepository(TaskDbContext taskDbContext) : base(taskDbContext)
+        public GarsonRepository(IMongoClient mongoClient, MongoDbSettings settings)
+            : base(mongoClient, settings)
         {
-            _taskDbContext = taskDbContext;
+            var database = mongoClient.GetDatabase(settings.DatabaseName);
+            _garsonCollection = database.GetCollection<Garson>("garsons");
         }
 
         public IEnumerable<Garson> GetComplatedGarsons()
         {
-
-            return _dbSet.Where(x => x.siparisTamamlandi == true).ToList();
+            return _garsonCollection.Find(g => g.siparisTamamlandi == true).ToList();
         }
+
         public IEnumerable<Garson> GetUnfinishedGarsons()
         {
-
-            return _dbSet.Where(x => x.siparisTamamlandi == false).ToList();
+            return _garsonCollection.Find(g => g.siparisTamamlandi == false).ToList();
         }
     }
 }

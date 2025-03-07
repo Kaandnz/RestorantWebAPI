@@ -1,43 +1,43 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using WebApplication8.Settings;
 
 
 namespace WebApplication8.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly DbContext _dbContext;
-        protected DbSet<T> _dbSet;
-
-        public GenericRepository(DbContext dbContext)
+        private readonly IMongoCollection<T> _collection;   
+        public GenericRepository(IMongoClient mongoClient , MongoDbSettings settings)
         {
-            _dbContext = dbContext;
-            _dbSet = _dbContext.Set<T>();
+            var database = mongoClient.GetDatabase(settings.DatabaseName);
+            _collection = database.GetCollection<T>(typeof(T).Name.ToLower());
         }
 
         public void Add(T entity)
         {
-            _dbSet.Add(entity);  
-            _dbContext.SaveChanges();
+            _collection.InsertOne(entity);
         }
 
         public void Delete(int id)
         {
-            var entity = _dbSet.Find(id);
-            if (entity != null)
-            {
-                _dbSet.Remove(entity);
-                _dbContext.SaveChanges();
-            }
+            var filter = Builders<T>.Filter.Eq("Id", id);
+            _collection.DeleteOne(filter);
+
         }
 
-        public IEnumerable<T> GetAll() => _dbSet.ToList();
+        public IEnumerable<T> GetAll() => _collection.Find(_ => true).ToList();
 
-        public T GetById(int id) => _dbSet.Find(id);
+        public T GetById(int id)
+        {
+            var filter = Builders<T>.Filter.Eq("Id", id);
+            return _collection.Find(filter).FirstOrDefault();
+        }
 
         public void Update(T entity)
         {
-            _dbSet.Update(entity);
-            _dbContext.SaveChanges();
+            var filter = Builders<T>.Filter.Eq("Id", typeof(T).GetProperty("Id").GetValue(entity, null));
+            _collection.ReplaceOne(filter, entity);
         }
     }
 }
